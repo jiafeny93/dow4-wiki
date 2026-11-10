@@ -1,0 +1,21 @@
+{
+  "name": "Dawn of War IV Wiki",
+  "short_name": "DoW4 Wiki",
+  "description": "Complete Dawn of War IV wiki with unit stats, faction guides, mission walkthroughs, and multiplayer builds. Every page carries a last-verified date.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ba1c1c",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
