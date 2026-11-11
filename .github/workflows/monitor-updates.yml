@@ -42,6 +42,7 @@ jobs:
       - name: Open issue for each new feed item
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }} # no checkout step → gh can't infer repo from git
           REPO: ${{ github.repository }}
           LABEL: ${{ env.LABEL }}
         run: |
