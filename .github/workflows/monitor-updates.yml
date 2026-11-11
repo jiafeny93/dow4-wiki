@@ -1,0 +1,96 @@
+name: Monitor Game Updates
+
+# Watches the official Dawn of War IV Steam news feed and opens a labeled
+# GitHub issue for every new item (patch notes, announcements, events).
+# The issue body carries the full RSS content so a human/agent can turn it
+# into a draft article PR without re-fetching. Idempotent: one issue per
+# feed item (searches existing issues before creating). No secrets, no LLM.
+
+on:
+  schedule:
+    - cron: "0 */4 * * *" # every 4 hours (UTC)
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+concurrency:
+  group: monitor-updates
+  cancel-in-progress: false
+
+env:
+  STEAM_APP_ID: "2272360"
+  LABEL: game-update
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch Steam news RSS
+        run: |
+          curl -sfL --max-time 60 \
+            "https://store.steampowered.com/feeds/news/app/${STEAM_APP_ID}/" \
+            -o news.xml
+          # Fail loudly on an empty/invalid feed rather than silently no-oping.
+          python3 -c "import xml.etree.ElementTree as ET; ET.parse('news.xml')"
+
+      - name: Open issue for each new feed item
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          LABEL: ${{ env.LABEL }}
+        run: |
+          gh label create "$LABEL" --color D93A3A --description "Auto-detected game update feed item" || true
+          python3 - <<'EOF'
+          import json, os, subprocess, sys
+          import xml.etree.ElementTree as ET
+
+          repo, label = os.environ["REPO"], os.environ["LABEL"]
+
+          def gh(*args, input=None, check=True):
+              cmd = ["gh", *args]
+              r = subprocess.run(cmd + ["-R", repo] if args[0] == "issue" else cmd,
+                                 capture_output=True, text=True, input=input)
+              if check and r.returncode != 0:
+                  print(f"gh {' '.join(args)} failed:\n{r.stderr}", file=sys.stderr)
+                  sys.exit(r.returncode)
+              return r
+
+          ns = {"a": "http://www.w3.org/2005/Atom"}
+          entries = ET.parse("news.xml").findall(".//a:entry", ns)
+
+          existing = json.loads(gh("issue", "list", "--label", label, "--state", "all",
+                                   "--limit", "300", "--json", "title").stdout)
+          seen = {i["title"].removeprefix("[game-update] ") for i in existing}
+
+          created = 0
+          for e in entries[:15]:  # newest 15; older items are history, not news
+              title = (e.findtext("a:title", default="", namespaces=ns) or "").strip()
+              updated = e.findtext("a:updated", default="", namespaces=ns)
+              link = next((l.get("href", "") for l in e.findall("a:link", ns)), "")
+              content = (e.findtext("a:content", default="", namespaces=ns) or "").strip()
+              if not title or title in seen:
+                  continue
+              body = (
+                  f"**Auto-detected Steam news item** (feed timestamp: {updated})\n\n"
+                  f"Source: {link}\n\n"
+                  "<details><summary>Full RSS content — raw material for the article</summary>\n\n"
+                  f"{content[:20000]}\n\n</details>\n\n"
+                  "---\n"
+                  "## Next steps (human/agent)\n"
+                  "1. Classify: patch notes / event / announcement / minor\n"
+                  "2. Draft or update the article (`draft: true` until every number is verified)\n"
+                  "3. Update affected pages (unit stats, roadmap, release info)\n"
+                  "4. Close this issue when the content PR merges."
+              )
+              r = gh("issue", "create", "--label", label,
+                     "--title", f"[game-update] {title[:120]}",
+                     "--body", body, check=False)
+              created += 1 if r.returncode == 0 else 0
+              if r.returncode != 0:
+                  print(f"create failed for {title!r}: {r.stderr}", file=sys.stderr)
+
+          print(f"feed entries: {len(entries)}, new issues: {created}")
+          EOF
