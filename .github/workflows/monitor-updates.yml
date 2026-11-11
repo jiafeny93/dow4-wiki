@@ -5,6 +5,9 @@ name: Monitor Game Updates
 # The issue body carries the full RSS content so a human/agent can turn it
 # into a draft article PR without re-fetching. Idempotent: one issue per
 # feed item (searches existing issues before creating). No secrets, no LLM.
+#
+# Feed format note: Steam's app news feed is RSS 2.0 (<item>/<guid>), not
+# Atom — verified against the live feed 2026-11-11.
 
 on:
   schedule:
@@ -49,34 +52,55 @@ jobs:
 
           repo, label = os.environ["REPO"], os.environ["LABEL"]
 
-          def gh(*args, input=None, check=True):
+          def gh(*args, check=True):
               cmd = ["gh", *args]
-              r = subprocess.run(cmd + ["-R", repo] if args[0] == "issue" else cmd,
-                                 capture_output=True, text=True, input=input)
+              if args[0] == "issue":
+                  cmd += ["-R", repo]
+              r = subprocess.run(cmd, capture_output=True, text=True)
               if check and r.returncode != 0:
                   print(f"gh {' '.join(args)} failed:\n{r.stderr}", file=sys.stderr)
                   sys.exit(r.returncode)
               return r
 
-          ns = {"a": "http://www.w3.org/2005/Atom"}
-          entries = ET.parse("news.xml").findall(".//a:entry", ns)
+          # Steam app news = RSS 2.0. Parse both shapes for future-proofing,
+          # prefer <item>; fall back to Atom <entry>.
+          tree = ET.parse("news.xml")
+          items = tree.findall(".//item")
+          if items:
+              def fields(e):
+                  return (
+                      (e.findtext("title") or "").strip(),
+                      (e.findtext("link") or "").strip(),
+                      (e.findtext("guid") or "").strip(),
+                      (e.findtext("pubDate") or "").strip(),
+                      (e.findtext("description") or "").strip(),
+                  )
+          else:
+              ns = {"a": "http://www.w3.org/2005/Atom"}
+
+              def fields(e):
+                  link = next((l.get("href", "") for l in e.findall("a:link", ns)), "")
+                  return (
+                      (e.findtext("a:title", default="", namespaces=ns) or "").strip(),
+                      link,
+                      link,
+                      (e.findtext("a:updated", default="", namespaces=ns) or "").strip(),
+                      (e.findtext("a:content", default="", namespaces=ns) or "").strip(),
+                  )
 
           existing = json.loads(gh("issue", "list", "--label", label, "--state", "all",
                                    "--limit", "300", "--json", "title").stdout)
           seen = {i["title"].removeprefix("[game-update] ") for i in existing}
 
           created = 0
-          for e in entries[:15]:  # newest 15; older items are history, not news
-              title = (e.findtext("a:title", default="", namespaces=ns) or "").strip()
-              updated = e.findtext("a:updated", default="", namespaces=ns)
-              link = next((l.get("href", "") for l in e.findall("a:link", ns)), "")
-              content = (e.findtext("a:content", default="", namespaces=ns) or "").strip()
+          for e in items[:15]:  # newest 15; older items are history, not news
+              title, link, guid, pub, content = fields(e)
               if not title or title in seen:
                   continue
               body = (
-                  f"**Auto-detected Steam news item** (feed timestamp: {updated})\n\n"
-                  f"Source: {link}\n\n"
-                  "<details><summary>Full RSS content — raw material for the article</summary>\n\n"
+                  f"**Auto-detected Steam news item**\n\n"
+                  f"- Published: {pub}\n- GUID: `{guid}`\n- Source: {link}\n\n"
+                  "<details><summary>Full feed content — raw material for the article</summary>\n\n"
                   f"{content[:20000]}\n\n</details>\n\n"
                   "---\n"
                   "## Next steps (human/agent)\n"
@@ -88,9 +112,12 @@ jobs:
               r = gh("issue", "create", "--label", label,
                      "--title", f"[game-update] {title[:120]}",
                      "--body", body, check=False)
-              created += 1 if r.returncode == 0 else 0
-              if r.returncode != 0:
+              if r.returncode == 0:
+                  created += 1
+              else:
                   print(f"create failed for {title!r}: {r.stderr}", file=sys.stderr)
 
-          print(f"feed entries: {len(entries)}, new issues: {created}")
+          print(f"feed items: {len(items)}, new issues: {created}")
+          if len(items) == 0:
+              print("WARNING: feed parsed but contained 0 items — check format", file=sys.stderr)
           EOF
