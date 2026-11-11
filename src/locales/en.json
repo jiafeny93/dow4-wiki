@@ -121,28 +121,28 @@
   "overview": {
     "factions": {
       "overviewTitle": "All Factions",
-      "overviewDescription": "Factions content for Dawn of War IV. Replace this overview text in the locale JSON — it feeds the category page title and description."
+      "overviewDescription": "Every Dawn of War IV faction in one place — playstyles, confirmed units and ultimate units for Space Marines, Orks, Necrons and Adeptus Mechanicus."
     },
     "units": {
       "overviewTitle": "All Units",
-      "overviewDescription": "Units content for Dawn of War IV. Replace this overview text in the locale JSON — it feeds the category page title and description."
+      "overviewDescription": "All confirmed Dawn of War IV units with verified stats — cost, HP, armour, damage and abilities, published as data is verified at launch."
     },
     "maps": {
       "overviewTitle": "All Maps",
-      "overviewDescription": "Maps content for Dawn of War IV. Replace this overview text in the locale JSON — it feeds the category page title and description."
+      "overviewDescription": "Dawn of War IV multiplayer maps — layouts, callouts and tactical notes for all 30 launch maps, added as they are verified."
     },
     "missions": {
       "overviewTitle": "All Missions",
-      "overviewDescription": "Missions content for Dawn of War IV. Replace this overview text in the locale JSON — it feeds the category page title and description."
+      "overviewDescription": "Dawn of War IV campaign walkthroughs — mission-by-mission guides for all four faction campaigns, published from launch week."
     },
     "guides": {
       "overviewTitle": "All Guides",
-      "overviewDescription": "Guides content for Dawn of War IV. Replace this overview text in the locale JSON — it feeds the category page title and description."
+      "overviewDescription": "Dawn of War IV guides — beginner basics, game modes, co-op, editions, release info and every core system explained."
     }
   },
   "home": {
     "meta": {
-      "title": "Dawn of War IV Wiki — Guides, Bosses & Progression",
+      "title": "Dawn of War IV Wiki — Unit Stats, Faction Guides & Walkthroughs",
       "description": "Complete Dawn of War IV wiki with unit stats, faction guides, mission walkthroughs, and multiplayer builds. Every page carries a last-verified date."
     },
     "updates": {
@@ -175,7 +175,7 @@
     "hero": {
       "badge": "Dawn of War IV",
       "title": "Dawn of War IV Wiki",
-      "description": "Complete Dawn of War IV guides — bosses, items, and progression.",
+      "description": "Unit stats, faction guides, mission walkthroughs and multiplayer builds — every page carries a last-verified date.",
       "ctaPrimary": "Start reading",
       "ctaSecondary": "Browse all"
     },
@@ -250,7 +250,7 @@
     }
   },
   "footer": {
-    "playGame": "Play Anvil Quest",
+    "playGame": "Play on Steam",
     "officialDiscord": "Official Discord",
     "officialYoutube": "Official YouTube",
     "officialTwitter": "Official Twitter",
