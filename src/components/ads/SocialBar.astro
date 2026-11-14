@@ -1,0 +1,30 @@
+---
+/**
+ * SocialBar — Adsterra Social Bar (in-page push format).
+ *
+ * Primary monetization at launch: no approval queue, pays per-view CPM on
+ * gaming traffic. Rendered at the end of <body> so it never blocks content;
+ * the zone script injects its own UI.
+ *
+ * The ad key (PUBLIC_AD_SOCIAL_BAR = the zone's script URL) gates rendering:
+ * empty = no ad. Never hardcode the zone URL here.
+ *
+ * Two Adsterra snippet shapes exist: an `.../invoke.js` URL that mounts into
+ * a `container-<zone-hash>` div, and a direct script URL (e.g.
+ * `https://bauval.org/<id>/<hash>`) that needs no container. Detected by URL.
+ *
+ * Ported from the Steal An Egg fork (battle-tested in production there).
+ */
+const scriptUrl = import.meta.env.PUBLIC_AD_SOCIAL_BAR;
+
+// invoke.js variant: last path segment is the zone hash for its container div.
+const zoneHash =
+  scriptUrl && scriptUrl.includes('invoke.js')
+    ? (scriptUrl.split('/').filter(Boolean).pop() ?? '')
+    : '';
+---
+
+{
+  scriptUrl && zoneHash && <div id={`container-${zoneHash}`} />
+}
+{scriptUrl && <script is:inline async data-cfasync="false" src={scriptUrl} />}
