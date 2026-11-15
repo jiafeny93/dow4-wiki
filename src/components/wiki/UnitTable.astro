@@ -1,0 +1,127 @@
+---
+/**
+ * UnitTable — sortable, faction-filterable stats table for the unit roster.
+ *
+ * The competitive edge: fandom/wiki engines can't serve dynamic tables —
+ * this is the "dow 4 unit stats" destination page element. Native JS only
+ * (no framework), progressively enhanced: without JS it renders a clean
+ * static table. Numbers stay "—" until verified in-game (see data/units.ts).
+ *
+ * Data source: ~/data/units.ts (single source of truth).
+ */
+import { UNITS, FACTIONS } from '~/data/units';
+
+const fmt = (v: number | null) => (v === null ? '—' : String(v));
+
+const rows = UNITS.map((u, i) => ({
+  ...u,
+  i,
+  cost: fmt(u.cost),
+  hp: fmt(u.hp),
+  armor: fmt(u.armor),
+  damage: fmt(u.damage),
+  factionClass: u.faction.toLowerCase().replace(/[^a-z]+/g, '-'),
+}));
+---
+
+<section aria-label="Dawn of War IV unit stats table" data-unit-table class="not-prose my-8">
+  <div class="mb-3 flex flex-wrap items-center gap-2" data-filters role="group" aria-label="Filter by faction">
+    <button type="button" data-filter="all" class="rounded-md border border-border bg-muted px-3 py-1 text-xs font-medium text-foreground transition hover:bg-accent" aria-pressed="true">All factions</button>
+    {FACTIONS.map((f) => (
+      <button type="button" data-filter={f.toLowerCase().replace(/[^a-z]+/g, '-')} class="rounded-md border border-border px-3 py-1 text-xs font-medium text-muted-foreground transition hover:bg-accent hover:text-foreground" aria-pressed="false">{f}</button>
+    ))}
+  </div>
+
+  <div class="overflow-x-auto rounded-lg border border-border">
+    <table class="w-full min-w-[640px] border-collapse text-sm" data-table>
+      <thead>
+        <tr class="bg-muted/60">
+          <th data-sort="name" class="cursor-pointer px-3 py-2 text-left font-semibold" aria-sort="none">Unit <span aria-hidden="true" data-arrow="name">↕</span></th>
+          <th data-sort="faction" class="cursor-pointer px-3 py-2 text-left font-semibold" aria-sort="none">Faction <span aria-hidden="true" data-arrow="faction">↕</span></th>
+          <th data-sort="role" class="cursor-pointer px-3 py-2 text-left font-semibold" aria-sort="none">Role <span aria-hidden="true" data-arrow="role">↕</span></th>
+          <th data-sort="cost" class="cursor-pointer px-3 py-2 text-right font-semibold" aria-sort="none">Cost <span aria-hidden="true" data-arrow="cost">↕</span></th>
+          <th data-sort="hp" class="cursor-pointer px-3 py-2 text-right font-semibold" aria-sort="none">HP <span aria-hidden="true" data-arrow="hp">↕</span></th>
+          <th data-sort="armor" class="cursor-pointer px-3 py-2 text-right font-semibold" aria-sort="none">Armour <span aria-hidden="true" data-arrow="armor">↕</span></th>
+          <th data-sort="damage" class="cursor-pointer px-3 py-2 text-right font-semibold" aria-sort="none">Damage <span aria-hidden="true" data-arrow="damage">↕</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((u) => (
+          <tr data-faction={u.factionClass} class={`border-t border-border ${u.kind === 'ultimate' ? 'bg-accent/30' : u.kind === 'hero' ? 'bg-accent/15' : ''}`}>
+            <td class="px-3 py-2 font-medium">{u.name}{u.kind === 'ultimate' && <span class="ml-2 rounded bg-accent px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-accent-foreground">Ultimate</span>}</td>
+            <td class="px-3 py-2 text-muted-foreground">{u.faction}</td>
+            <td class="px-3 py-2 text-muted-foreground">{u.role}</td>
+            <td class="px-3 py-2 text-right tabular-nums">{u.cost}</td>
+            <td class="px-3 py-2 text-right tabular-nums">{u.hp}</td>
+            <td class="px-3 py-2 text-right tabular-nums">{u.armor}</td>
+            <td class="px-3 py-2 text-right tabular-nums">{u.damage}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <p class="mt-2 text-xs text-muted-foreground">
+    Numeric stats show <strong>—</strong> until measured in-game — the game unlocks Nov 30 (Commander Edition) / Dec 3.
+    Every value on this site is verified before it is published. Click a column header to sort; use the faction buttons to filter.
+  </p>
+</section>
+
+<script>
+  // Progressive enhancement: sort + filter, no framework.
+  const root = document.querySelector('[data-unit-table]');
+  if (root) {
+    const tbody = root.querySelector('tbody')!;
+    const rows = [...tbody.querySelectorAll('tr')];
+    const headers = [...root.querySelectorAll('th[data-sort]')] as HTMLElement[];
+
+    const raw = (row: HTMLElement, key: string) => {
+      const idx = headers.findIndex((h) => h.dataset.sort === key);
+      return row.children[idx]?.textContent?.trim() ?? '';
+    };
+
+    let sortKey: string | null = null;
+    let sortDir = 1;
+    headers.forEach((h) => {
+      h.addEventListener('click', () => {
+        const key = h.dataset.sort!;
+        if (sortKey === key) sortDir = -sortDir;
+        else { sortKey = key; sortDir = 1; }
+        const numeric = ['cost', 'hp', 'armor', 'damage'].includes(key);
+        const sorted = [...rows].sort((a, b) => {
+          const x = raw(a, key), y = raw(b, key);
+          if (numeric) {
+            const nx = x === '—' ? Infinity : parseFloat(x);
+            const ny = y === '—' ? Infinity : parseFloat(y);
+            return (nx - ny) * sortDir;
+          }
+          return x.localeCompare(y) * sortDir;
+        });
+        sorted.forEach((r) => tbody.appendChild(r));
+        headers.forEach((hh) => {
+          hh.setAttribute('aria-sort', 'none');
+          const arrow = hh.querySelector('[data-arrow]');
+          if (arrow) arrow.textContent = '↕';
+        });
+        h.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+        const arrow = h.querySelector('[data-arrow]');
+        if (arrow) arrow.textContent = sortDir === 1 ? '↑' : '↓';
+      });
+    });
+
+    root.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const f = btn.dataset.filter!;
+        rows.forEach((r) => {
+          r.style.display = f === 'all' || r.dataset.faction === f ? '' : 'none';
+        });
+        root.querySelectorAll('[data-filter]').forEach((b) => {
+          b.setAttribute('aria-pressed', String(b === btn));
+          b.classList.toggle('bg-muted', b === btn);
+          b.classList.toggle('text-foreground', b === btn);
+          b.classList.toggle('text-muted-foreground', b !== btn);
+        });
+      });
+    });
+  }
+</script>

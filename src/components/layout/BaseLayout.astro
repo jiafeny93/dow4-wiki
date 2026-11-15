@@ -278,8 +278,9 @@ const privacyLabel = footerStrings.privacyPolicy ?? 'Privacy Policy';
         } catch {
           /* storage unavailable */
         }
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (stored === 'dark' || stored === 'black' || (!stored && prefersDark)) {
+        // Grimdark by default: Warhammer audience lands in dark mode unless
+        // they explicitly chose light. Respect the saved choice either way.
+        if (stored !== 'light') {
           document.documentElement.classList.add('dark');
           if (stored === 'black') document.documentElement.classList.add('black');
         }
