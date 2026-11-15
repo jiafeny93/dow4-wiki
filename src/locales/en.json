@@ -173,11 +173,12 @@
       "secondary": "Join the community"
     },
     "hero": {
-      "badge": "Dawn of War IV",
+      "badge": "Out December 3, 2026 · PC",
       "title": "Dawn of War IV Wiki",
       "description": "Unit stats, faction guides, mission walkthroughs and multiplayer builds — every page carries a last-verified date.",
       "ctaPrimary": "Start reading",
-      "ctaSecondary": "Browse all"
+      "ctaSecondary": "Browse all",
+      "videoId": "z3u6jlJUEVI"
     },
     "start": {
       "badge": "Quick start",
