@@ -132,20 +132,20 @@ async function main() {
 
   // 1. favicon.svg — handwritten SVG (browser renders the <text> with its own
   //    system fonts; no font embedding needed at this size).
-  const svgHash = cacheKey('favicon.svg', brandHex, initial);
+  const svgHash = cacheKey('favicon.svg', brandHex, 'IV-emblem');
   if (fresh('favicon.svg', svgHash)) {
     writeFileSync(
       join(PUBLIC, 'favicon.svg'),
-      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="${brandHex}"/><text x="32" y="43" font-family="system-ui, -apple-system, 'Hiragino Sans', 'Noto Sans CJK SC', sans-serif" font-size="34" font-weight="700" fill="${ink}" text-anchor="middle">${initial}</text></svg>\n`,
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" rx="13" fill="#15151a"/><rect x="2" y="2" width="60" height="60" rx="13" fill="none" stroke="${brandHex}" stroke-width="3.5"/><path d="M9 46 L55 16" stroke="${brandHex}" stroke-width="5" stroke-linecap="round" opacity="0.92"/><text x="32" y="43" font-family="system-ui, -apple-system, 'Hiragino Sans', 'Noto Sans CJK SC', sans-serif" font-size="27" font-weight="900" letter-spacing="0.6" fill="#efe9dc" text-anchor="middle">IV</text></svg>\n`,
     );
     manifest['favicon.svg'] = svgHash;
     console.log('  ✅ public/favicon.svg');
   }
 
-  // 2. PNG favicons — one 512px satori render, sharp-resized per size.
-  const pngHash = cacheKey('favicon-png', brandHex, initial);
+  // 2. PNG favicons — one 512px satori render (IV emblem), sharp-resized per size.
+  const pngHash = cacheKey('favicon-png', brandHex, 'IV-emblem');
   if (fresh('favicon-png', pngHash)) {
-    const fonts = await fontsFor(initial);
+    const fonts = await fontsFor('IV');
     const png512 = await renderPng(
       {
         type: 'div',
@@ -156,13 +156,42 @@ async function main() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: brandHex,
-            color: ink,
-            fontSize: 300,
-            fontWeight: 700,
-            fontFamily: hasCjk(initial) ? 'Noto Sans CJK SC' : 'Lato',
+            position: 'relative',
+            background: '#15151a',
+            border: `14px solid ${brandHex}`,
+            borderRadius: 44,
           },
-          children: initial,
+          children: [
+            {
+              type: 'div',
+              props: {
+                style: {
+                  position: 'absolute',
+                  left: '50%',
+                  top: '42%',
+                  width: 470,
+                  height: 14,
+                  background: brandHex,
+                  borderRadius: 8,
+                  opacity: 0.92,
+                  transform: 'translate(-50%, -50%) rotate(-45deg)',
+                },
+              },
+            },
+            {
+              type: 'div',
+              props: {
+                style: {
+                  fontSize: 250,
+                  fontWeight: 900,
+                  color: '#efe9dc',
+                  letterSpacing: 6,
+                  fontFamily: 'Lato',
+                },
+                children: 'IV',
+              },
+            },
+          ],
         },
       },
       512,
