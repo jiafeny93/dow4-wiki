@@ -102,7 +102,7 @@ const jsonLd = [
           {entries.map((entry) => {
             const slug = parseEntryId(entry.id)?.slug ?? '';
             return (
-              <a href={detailPath(category, slug, locale)} class="card p-5">
+              <a href={detailPath(category, slug, locale)} class="card gd-card p-5" data-reveal>
                 {entry.data.image && <ArticleCover src={entry.data.image} />}
                 <h2 class="font-semibold leading-snug">{entry.data.title}</h2>
                 <p class="mt-1 line-clamp-2 text-sm text-muted-foreground">

@@ -81,6 +81,9 @@ const codesFaqTitle = shared.codesFaqTitle ?? 'Codes FAQ';
 // Per-article FAQ (frontmatter `faq`, any page type). Merged with the codes
 // FAQ into ONE FAQPage JSON-LD entity — Google allows one per page.
 const articleFaqItems = (entry.data.faq ?? []) as Array<{ question: string; answer: string }>;
+// Faction accent: faction pages carry their chapter color (globals.css map).
+const articleSlug = parseEntryId(entry.id)?.slug ?? '';
+const factionAttr = entry.data.category === 'factions' ? articleSlug : undefined;
 const faqJsonLdItems = [...codesFaqItems, ...articleFaqItems];
 const faqTitle = shared.faqTitle ?? 'FAQ';
 
@@ -167,12 +170,12 @@ const jsonLd = [
   contentLocale={servedLocale}
 >
   {/* Reading progress bar (top edge) */}
-  <div class="pointer-events-none fixed inset-x-0 top-0 z-50 h-0.5" aria-hidden="true">
-    <div id="reading-progress" class="h-full bg-nav opacity-80" style="width: 0%"></div>
+  <div data-faction={factionAttr} class="pointer-events-none fixed inset-x-0 top-0 z-50 h-0.5" aria-hidden="true">
+    <div id="reading-progress" class="h-full opacity-80" style="width: 0%; background: var(--faction, hsl(var(--brand)))"></div>
   </div>
 
   <div class="flex gap-8">
-    <article class="mx-auto min-w-0 max-w-3xl flex-1">
+    <article data-faction={factionAttr} class="mx-auto min-w-0 max-w-3xl flex-1">
     {/* Breadcrumb */}
     <nav class="text-sm text-muted-foreground" aria-label={shared.breadcrumbAria ?? 'Breadcrumb'}>
       <a href={homeUrl(locale)} class="hover:text-nav">{nav.home}</a>

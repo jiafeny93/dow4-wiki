@@ -175,5 +175,165 @@
   }
 }
 
-/* Theme initialization script — runs before paint to avoid FOUC. */
-/* The actual <script> is injected in BaseLayout.astro. */
+/* ═══════════════════════════════════════════════════════════════════
+   GRIMDARK VISUAL SYSTEM — pure CSS, zero JS framework, zero runtime.
+   Design language: black-iron plates, engraved roman type, ember glow.
+   Font is imported in BaseLayout (@fontsource/cinzel — local, free).
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* — Engraved display type: Cinzel on all headings — */
+h1,
+h2,
+h3,
+.font-display {
+  font-family: 'Cinzel', 'Iowan Old Style', Georgia, serif;
+  letter-spacing: 0.02em;
+}
+/* Keep small UI labels in the system font (legibility at tiny sizes). */
+header nav h1,
+header nav h2,
+header nav h3 {
+  font-family: inherit;
+}
+
+/* — Faction accents: page sections set data-faction, CSS supplies the color — */
+:root {
+  --f-sm: #3b82f6; /* Space Marines  */
+  --f-orks: #4ade80; /* Orks           */
+  --f-nec: #2dd4bf; /* Necrons        */
+  --f-mech: #fb923c; /* Adeptus Mechanicus */
+}
+[data-faction='space-marines'] { --faction: var(--f-sm); }
+[data-faction='orks'] { --faction: var(--f-orks); }
+[data-faction='necrons'] { --faction: var(--f-nec); }
+[data-faction='adeptus-mechanicus'] { --faction: var(--f-mech); }
+
+/* Unit table rows: a faction-colored plate on the first cell. */
+[data-unit-table] tbody td:first-child { position: relative; padding-left: 0.85rem; }
+[data-unit-table] tbody td:first-child::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--faction, hsl(var(--brand)));
+}
+
+/* — Hero atmosphere: aurora wash + embers — */
+.gd-aurora {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 45% at 22% 30%, hsl(var(--brand) / 0.22), transparent 70%),
+    radial-gradient(30% 40% at 78% 20%, hsl(var(--brand) / 0.14), transparent 70%),
+    radial-gradient(45% 50% at 55% 85%, hsl(var(--brand-h) 90% 12% / 0.5), transparent 75%);
+  filter: blur(2px);
+  animation: gd-aurora 16s ease-in-out infinite alternate;
+}
+@keyframes gd-aurora {
+  0% { transform: translate3d(-2%, -1%, 0) scale(1); opacity: 0.85; }
+  100% { transform: translate3d(2%, 2%, 0) scale(1.08); opacity: 1; }
+}
+
+/* Rising embers: drop 6–8 <i class="gd-ember"/> inside a relative hero. */
+.gd-ember {
+  position: absolute;
+  bottom: -6px;
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background: hsl(var(--brand-light) / 0.9);
+  box-shadow: 0 0 6px 1px hsl(var(--brand) / 0.8);
+  opacity: 0;
+  animation: gd-ember 9s linear infinite;
+}
+.gd-ember:nth-child(1) { left: 12%; animation-delay: 0s; }
+.gd-ember:nth-child(2) { left: 28%; animation-delay: 2.4s; }
+.gd-ember:nth-child(3) { left: 44%; animation-delay: 4.8s; }
+.gd-ember:nth-child(4) { left: 58%; animation-delay: 1.2s; }
+.gd-ember:nth-child(5) { left: 72%; animation-delay: 3.6s; }
+.gd-ember:nth-child(6) { left: 86%; animation-delay: 6s; }
+.gd-ember:nth-child(7) { left: 22%; animation-delay: 7.5s; }
+.gd-ember:nth-child(8) { left: 66%; animation-delay: 5.5s; }
+@keyframes gd-ember {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  8% { opacity: 0.9; }
+  60% { opacity: 0.55; }
+  100% { transform: translateY(-42vh) translateX(14px); opacity: 0; }
+}
+
+/* — Engraved title sweep (hero h1): a slow gold-red sheen — */
+.gd-shimmer {
+  background: linear-gradient(
+    100deg,
+    hsl(var(--foreground)) 38%,
+    hsl(var(--brand-light)) 50%,
+    hsl(var(--foreground)) 62%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gd-sheen 7s ease-in-out infinite;
+}
+@keyframes gd-sheen {
+  0%, 55% { background-position: 120% 0; }
+  85%, 100% { background-position: -20% 0; }
+}
+
+/* — Card life: glow + lift on hover (apply .gd-card alongside card styles) — */
+.gd-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.gd-card:hover {
+  transform: translateY(-3px);
+  border-color: hsl(var(--brand) / 0.55);
+  box-shadow:
+    0 0 0 1px hsl(var(--brand) / 0.25),
+    0 10px 28px -12px hsl(var(--brand) / 0.45);
+}
+
+/* — Gothic ornament divider:  ——— ◆ ———  — */
+.gd-ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: hsl(var(--brand) / 0.8);
+}
+.gd-ornament::before,
+.gd-ornament::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--brand) / 0.5));
+}
+.gd-ornament::after {
+  background: linear-gradient(90deg, hsl(var(--brand) / 0.5), transparent);
+}
+
+/* — Scroll reveal: [data-reveal] fades up once when it enters view — */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Accessibility: no motion for users who asked for none. */
+@media (prefers-reduced-motion: reduce) {
+  .gd-aurora,
+  .gd-ember,
+  .gd-shimmer {
+    animation: none;
+  }
+  .gd-shimmer { color: inherit; background: none; -webkit-background-clip: initial; background-clip: initial; }
+  .gd-card { transition: none; }
+  .gd-card:hover { transform: none; }
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+}
