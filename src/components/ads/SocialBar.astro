@@ -9,19 +9,20 @@
  * The ad key (PUBLIC_AD_SOCIAL_BAR = the zone's script URL) gates rendering:
  * empty = no ad. Never hardcode the zone URL here.
  *
- * Two Adsterra snippet shapes exist: an `.../invoke.js` URL that mounts into
- * a `container-<zone-hash>` div, and a direct script URL (e.g.
- * `https://bauval.org/<id>/<hash>`) that needs no container. Detected by URL.
+ * Three Adsterra snippet shapes are handled:
+ *  - `.../21/<hash>` container variant → needs a `container-<hash>` div
+ *  - `.../invoke.js` variant → mounts into `container-<last-segment>` div
+ *  - direct script URL (e.g. `https://bauval.org/14/<hash>`) → no container
  *
  * Ported from the Steal An Egg fork (battle-tested in production there).
  */
 const scriptUrl = import.meta.env.PUBLIC_AD_SOCIAL_BAR;
 
-// invoke.js variant: last path segment is the zone hash for its container div.
-const zoneHash =
-  scriptUrl && scriptUrl.includes('invoke.js')
-    ? (scriptUrl.split('/').filter(Boolean).pop() ?? '')
-    : '';
+const lastSegment = scriptUrl ? (scriptUrl.split('/').filter(Boolean).pop() ?? '') : '';
+const hashMatch = lastSegment.match(/^[a-f0-9]{32}$/i) ? lastSegment : '';
+const needsContainer =
+  !!scriptUrl && (scriptUrl.includes('/21/') || scriptUrl.includes('invoke.js'));
+const zoneHash = needsContainer ? hashMatch : '';
 ---
 
 {

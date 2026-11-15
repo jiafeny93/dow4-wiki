@@ -2,34 +2,42 @@
 /**
  * InContentAd — a page-internal ad slot (e.g. between article sections).
  *
- * Renders a Google AdSense responsive unit (AdSense decides the best size
- * for the viewport). Gated on PUBLIC_ADSENSE_CLIENT + PUBLIC_ADSENSE_SLOT_INCONTENT:
- * either empty = nothing rendered.
+ * Renders a 300×250 (mobile-friendly) or 728×90 (desktop) banner.
+ * Gated by env vars — empty key = no ad rendered.
  *
  * Unlike StickyBanner, this is not sticky; it sits inline with content.
  */
-import AdSenseSlot from './AdSenseSlot.astro';
-import { getUi } from '~/i18n/ui';
-import { isLocale } from '~/i18n/routing';
+import AdBanner from './AdBanner.astro';
 
 interface Props {
-  /** Optional label override above the ad (for disclosure). */
+  /** Which slot to render. */
+  type?: 'banner-300x250' | 'banner-728x90' | 'banner-468x60';
+  /** Optional label above the ad (for disclosure). */
   label?: string;
 }
+const { type = 'banner-300x250', label = 'Advertisement' } = Astro.props;
 
-const client = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
-const slot = import.meta.env.PUBLIC_ADSENSE_SLOT_INCONTENT as string | undefined;
-const show = !!(client && slot);
-const current = Astro.currentLocale;
-const sharedStrings =
-  current && isLocale(current)
-    ? ((getUi(current).shared ?? {}) as unknown as Record<string, string>)
-    : {};
-const { label = sharedStrings.adLabel ?? 'Advertisement' } = Astro.props;
+// Map slot type → env var name.
+const envVarMap: Record<string, string> = {
+  'banner-300x250': 'PUBLIC_AD_BANNER_300X250',
+  'banner-728x90': 'PUBLIC_AD_BANNER_728X90',
+  'banner-468x60': 'PUBLIC_AD_BANNER_468X60',
+};
+const envVar = envVarMap[type];
+const adKey = (import.meta.env as Record<string, string | undefined>)[envVar];
+
+// Wide banners overflow narrow viewports: hide the whole block there.
+// The iframe is lazy-loaded, so display:none = never fetched = no wasted impression.
+const displayClass =
+  type === 'banner-728x90'
+    ? 'hidden md:flex'
+    : type === 'banner-468x60'
+      ? 'hidden sm:flex'
+      : 'flex';
 ---
-{show && (
-  <div class="my-8 flex min-h-[250px] flex-col items-center justify-center">
+{adKey && (
+  <div class:list={['my-8 flex-col items-center', displayClass]}>
     <span class="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
-    <AdSenseSlot position="incontent" />
+    <AdBanner type={type} />
   </div>
 )}
