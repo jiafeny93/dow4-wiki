@@ -127,8 +127,8 @@ describe('SEO helpers', () => {
     });
 
     it('skips the suffix when the title already carries the game name', () => {
-      const t = pageTitle('Anvil Quest Boss Guide');
-      expect(t).toBe('Anvil Quest Boss Guide');
+      const t = pageTitle('Dawn of War IV Boss Guide');
+      expect(t).toBe('Dawn of War IV Boss Guide');
     });
 
     it('switches to the short suffix for long titles (>50 chars)', () => {
