@@ -18,6 +18,7 @@
  * compressed from ~7 screens to ~4.
  */
 import { Icon } from 'astro-icon/components';
+import NativeBanner from '~/components/ads/NativeBanner.astro';
 import LocaleLayout from '~/components/layout/LocaleLayout.astro';
 import VideoSection from '~/components/home/VideoSection.astro';
 import QuickStart from '~/components/home/QuickStart.astro';
@@ -251,4 +252,6 @@ function trendingLabel(link: QuickLink): string {
       </section>
     )
   }
+  {/* Bottom native ad — env-gated. */}
+  <NativeBanner />
 </LocaleLayout>

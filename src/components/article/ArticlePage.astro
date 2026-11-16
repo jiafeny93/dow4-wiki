@@ -16,6 +16,8 @@ import { Icon } from 'astro-icon/components';
 import { render } from 'astro:content';
 import LocaleLayout from '~/components/layout/LocaleLayout.astro';
 import InContentAd from '~/components/ads/InContentAd.astro';
+import NativeBanner from '~/components/ads/NativeBanner.astro';
+import AdBanner from '~/components/ads/AdBanner.astro';
 import AffiliateSuggestion from '~/components/ads/AffiliateSuggestion.astro';
 import Comments from '~/components/article/Comments.astro';
 import TableOfContents from '~/components/article/TableOfContents.astro';
@@ -469,6 +471,9 @@ const jsonLd = [
 
     {/* Affiliate suggestions — config empty = component renders nothing (v2.0) */}
     <AffiliateSuggestion locale={locale} category={entry.data.category} />
+    {/* Bottom ad group — native + leaderboard, env-gated. */}
+    <NativeBanner />
+    <AdBanner type="banner-728x90" />
   </article>
     {/* Desktop TOC — sticky, between article and sidebar */}
     <div class="hidden w-56 shrink-0 lg:block xl:w-64">
