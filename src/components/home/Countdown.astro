@@ -12,7 +12,7 @@
 const target = new Date('2026-12-03T18:00:00Z').getTime();
 ---
 
-<div id="launch-countdown" class="mt-6 flex items-center gap-3" data-target={String(target)} aria-label="Launch countdown">
+<div id="launch-countdown" class="mt-5 flex flex-wrap items-center gap-2.5" data-target={String(target)} aria-label="Launch countdown">
   <span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Launch in</span>
   <div class="flex gap-2">
     <div class="count-cell"><span data-cd="d">--</span><label>Days</label></div>
@@ -27,22 +27,22 @@ const target = new Date('2026-12-03T18:00:00Z').getTime();
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 3rem;
+    min-width: 2.7rem;
     border: 1px solid hsl(var(--border));
     border-radius: 0.5rem;
     background: hsl(var(--card) / 0.6);
-    padding: 0.35rem 0.5rem;
+    padding: 0.3rem 0.55rem;
   }
   .count-cell span {
     font-family: 'Cinzel', Georgia, serif;
     font-weight: 700;
-    font-size: 1.15rem;
+    font-size: 1rem;
     line-height: 1.1;
     color: hsl(var(--brand-light));
     font-variant-numeric: tabular-nums;
   }
   .count-cell label {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: hsl(var(--muted-foreground));

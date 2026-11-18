@@ -80,16 +80,16 @@ function trendingLabel(link: QuickLink): string {
   jsonLd={jsonLd}
 >
   {/* ─────────────────────────────── Hero ─────────────────────────────── */}
-  <section class="relative flex min-h-[52vh] items-center overflow-hidden border-b border-border md:min-h-[68vh]">
-    {/* Official key art base (Steam press asset) — dimmed under the atmosphere layers. */}
+  <section class="relative flex items-center overflow-hidden border-b border-border">
+    {/* Official battle screenshot base (Steam press asset) — visible under the atmosphere layers. */}
     <div
       aria-hidden="true"
-      class="pointer-events-none absolute inset-0 bg-cover bg-center opacity-25 dark:opacity-30"
-      style="background-image: url('/images/screenshots/hero-bg.jpg')"
+      class="pointer-events-none absolute inset-0 bg-cover bg-center opacity-35 dark:opacity-40"
+      style="background-image: url('/images/screenshots/shot-3.jpg')"
     />
     <div
       aria-hidden="true"
-      class="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background"
+      class="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/50 via-background/30 to-background"
     />
     {/* Grimdark atmosphere: aurora wash + rising embers (pure CSS). */}
     <div aria-hidden="true" class="gd-aurora" />
@@ -113,6 +113,9 @@ function trendingLabel(link: QuickLink): string {
         {hero.title}
       </h1>
       <p class="mt-5 max-w-xl text-base text-muted-foreground md:text-lg">{hero.description}</p>
+      <p class="mt-3 text-xs font-medium uppercase tracking-wider text-muted-foreground/80">
+        67 pages · every stat verified · updated daily through launch
+      </p>
       <div class="mt-8 flex flex-wrap gap-3">
         {
           hero.ctaPrimary && (
