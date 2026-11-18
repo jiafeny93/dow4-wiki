@@ -1,0 +1,82 @@
+---
+/**
+ * Countdown — launch countdown to the Dawn of War IV unlock.
+ *
+ * Pure vanilla: one interval, four number cells, aria-live off (polite-ish).
+ * Shows "LIVE" state after the target passes. Respects reduced motion by
+ * simply not being animated (numbers tick, no effects).
+ *
+ * Target: Dec 3 2026 10:00 PT ≈ 18:00 UTC (Steam global unlock pattern;
+ * the hero copy points to the release-time page for the verified schedule).
+ */
+const target = new Date('2026-12-03T18:00:00Z').getTime();
+---
+
+<div id="launch-countdown" class="mt-6 flex items-center gap-3" data-target={String(target)} aria-label="Launch countdown">
+  <span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Launch in</span>
+  <div class="flex gap-2">
+    <div class="count-cell"><span data-cd="d">--</span><label>Days</label></div>
+    <div class="count-cell"><span data-cd="h">--</span><label>Hrs</label></div>
+    <div class="count-cell"><span data-cd="m">--</span><label>Min</label></div>
+    <div class="count-cell"><span data-cd="s">--</span><label>Sec</label></div>
+  </div>
+</div>
+
+<style>
+  .count-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 3rem;
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.5rem;
+    background: hsl(var(--card) / 0.6);
+    padding: 0.35rem 0.5rem;
+  }
+  .count-cell span {
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    line-height: 1.1;
+    color: hsl(var(--brand-light));
+    font-variant-numeric: tabular-nums;
+  }
+  .count-cell label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: hsl(var(--muted-foreground));
+  }
+</style>
+
+<script>
+  const root = document.getElementById('launch-countdown');
+  if (root) {
+    const target = Number(root.dataset.target ?? '0');
+    const cells = {
+      d: root.querySelector('[data-cd="d"]'),
+      h: root.querySelector('[data-cd="h"]'),
+      m: root.querySelector('[data-cd="m"]'),
+      s: root.querySelector('[data-cd="s"]'),
+    };
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const tick = () => {
+      const diff = target - Date.now();
+      if (diff <= 0) {
+        root.innerHTML =
+          '<span class="text-sm font-bold uppercase tracking-widest text-[hsl(var(--brand-light))]">⚔ The war for Kronus has begun</span>';
+        return;
+      }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor(diff / 3600000) % 24;
+      const m = Math.floor(diff / 60000) % 60;
+      const s = Math.floor(diff / 1000) % 60;
+      if (cells.d) cells.d.textContent = String(d);
+      if (cells.h) cells.h.textContent = pad(h);
+      if (cells.m) cells.m.textContent = pad(m);
+      if (cells.s) cells.s.textContent = pad(s);
+      setTimeout(tick, 1000);
+    };
+    tick();
+  }
+</script>
