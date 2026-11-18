@@ -1,21 +1,36 @@
-# dow4.xyz 核心词(GSC 排名抽查用) — 每行一个,# 开头为注释
+# dow4.xyz 核心词(GSC 排名抽查) — 每行一个。11-18 按真实 GSC 查询词校准(dawn of war 4 全称为主)
 dawn of war 4
-dow 4
-dow 4 wiki
-dow 4 units
-dow 4 unit stats
-dow 4 factions
-dow 4 tier list
-dow 4 best faction
-dow 4 campaign
-dow 4 co op
-dow 4 last stand
-dow 4 system requirements
-dow 4 release time
-dow 4 imperial knights
-dow 4 stompa
-dow 4 awakened monolith
-dow 4 glory kills
-dow 4 crossplay
-dow 4 geforce now
-dow 4 kronus
+dawn of war 4 wiki
+dawn of war 4 crossplay
+dawn of war 4 factions
+dawn of war 4 all factions
+dawn of war 4 coop
+dawn of war 4 coop campaign
+dawn of war 4 co op
+dawn of war 4 campaign co op
+dawn of war 4 game modes
+dawn of war 4 unit roster
+dawn of war 4 roster
+dow4
+dow4 factions
+dawn of war 4 units
+dawn of war 4 unit stats
+dawn of war 4 tier list
+dawn of war 4 best faction
+dawn of war 4 campaign
+dawn of war 4 last stand
+dawn of war 4 system requirements
+dawn of war 4 download size
+dawn of war 4 preload
+dawn of war 4 steam deck
+dawn of war 4 geforce now
+dawn of war 4 kronus
+dawn of war 4 dark crusade
+dawn of war 4 studio
+dawn of war 4 developer
+dawn of war 4 open beta
+dawn of war 4 gameplay
+dawn of war 4 imperial knights
+dawn of war 4 stompa
+dawn of war 4 awakened monolith
+dawn of war 4 release time
