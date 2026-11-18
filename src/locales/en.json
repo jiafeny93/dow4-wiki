@@ -163,6 +163,10 @@
         {
           "label": "Maps",
           "href": "/maps"
+        },
+        {
+          "label": "Trailers",
+          "href": "/guides/trailers/"
         }
       ]
     },
