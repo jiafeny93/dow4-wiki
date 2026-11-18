@@ -29,10 +29,10 @@ export interface NavigationItem {
 }
 
 export const NAVIGATION_CONFIG: NavigationItem[] = [
-  { key: 'factions', path: '/factions', icon: 'lucide:folder', isContentType: true, order: 1 },
-  { key: 'units', path: '/units', icon: 'lucide:folder', isContentType: true, order: 2 },
+  { key: 'factions', path: '/factions', icon: 'lucide:shield', isContentType: true, order: 1 },
+  { key: 'units', path: '/units', icon: 'lucide:swords', isContentType: true, order: 2 },
   { key: 'maps', path: '/maps', icon: 'lucide:map', isContentType: true, order: 3 },
-  { key: 'missions', path: '/missions', icon: 'lucide:folder', isContentType: true, order: 4 },
+  { key: 'missions', path: '/missions', icon: 'lucide:target', isContentType: true, order: 4 },
   { key: 'guides', path: '/guides', icon: 'lucide:book-open', isContentType: true, order: 5 },
 ];
 
