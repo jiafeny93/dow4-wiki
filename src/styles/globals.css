@@ -12,11 +12,11 @@
 @layer base {
   :root {
     /* Light mode theme color — Anvil orange (forge fire). */
-    --brand: 0 74% 42%;
-    --brand-light: 0 74% 52%;
+    --brand: 28 91% 45%;
+    --brand-light: 28 95% 55%;
     /* Split H/S for derived shades (e.g. darker button backgrounds). */
-    --brand-h: 0;
-    --brand-s: 74%;
+    --brand-h: 28;
+    --brand-s: 91%;
     /* Text-safe shade of the brand: --brand at 52% lightness is only 3.1:1
        on white (WCAG AA needs 4.5:1 for text). Derived from the H/S splits,
        so fork themes that only edit --brand/--brand-light stay consistent. */
@@ -25,10 +25,10 @@
 
   .dark {
     /* Dark mode theme color — slightly deeper. */
-    --brand: 0 69% 38%;
-    --brand-light: 0 69% 48%;
-    --brand-h: 0;
-    --brand-s: 69%;
+    --brand: 28 91% 48%;
+    --brand-light: 28 95% 58%;
+    --brand-h: 28;
+    --brand-s: 91%;
     --brand-text: var(--brand-h) var(--brand-s) 52%;
   }
 }
@@ -337,3 +337,73 @@ header nav h3 {
   .gd-card:hover { transform: none; }
   [data-reveal] { opacity: 1; transform: none; transition: none; }
 }
+
+
+/* ═══ Official-reference component language (dow4.guide style) ═══ */
+
+/* Angled HUD CTA — clip-path parallelogram + inner glow. */
+.btn-hud {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: hsl(var(--foreground));
+  background: linear-gradient(135deg, hsl(var(--brand)) 0%, hsl(var(--brand-light)) 100%);
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  padding: 0.7rem 1.6rem;
+  transition: filter 0.2s ease, transform 0.15s ease;
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.2), 0 0 18px hsl(var(--brand) / 0.35);
+}
+.btn-hud:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+/* Glass stat strip — icon / big number / label, hairline dividers. */
+.stat-strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  background: hsl(var(--card) / 0.55);
+  backdrop-filter: blur(6px);
+}
+.stat-strip > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 1rem 0.5rem;
+}
+.stat-strip > div + div {
+  border-left: 1px solid hsl(var(--border) / 0.7);
+}
+.stat-strip .num {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 900;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: hsl(var(--brand-light));
+}
+.stat-strip .lbl {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Constellation background — pure CSS dot matrix, no images. */
+.gd-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(hsl(var(--brand-light) / 0.16) 1px, transparent 1px), radial-gradient(hsl(220 30% 70% / 0.08) 1px, transparent 1px);
+  background-size: 90px 90px, 130px 130px;
+  background-position: 0 0, 45px 30px;
+  opacity: 0.5;
+}
+@media (max-width: 640px) { .stat-strip { grid-auto-flow: row; } .stat-strip > div + div { border-left: none; border-top: 1px solid hsl(var(--border) / 0.7); } }
