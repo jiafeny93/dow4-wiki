@@ -10,18 +10,23 @@ draft: false
 summary: "Dawn of War IV's published Year One roadmap includes two paid story expansions — The Blood Ravens Story Prologue and AFTERMATH — plus free updates: new modes, Map Pack 1, a create-and-share Mission Editor, and the returning Crusade mode pushed to early 2027."
 ---
 
+import Timeline from '~/components/wiki/Timeline.astro';
+
 ## What is planned after Dawn of War IV launches?
 
 KING Art and Deep Silver have published a **Year One roadmap** mixing paid expansions with free updates. The revised roadmap (updated after the game moved from September 17 to December 3, 2026) currently includes:
 
-| Content | Type | Timing |
-|---|---|---|
-| The Blood Ravens Story Prologue | Paid expansion | Year One |
-| AFTERMATH | Paid expansion | Year One |
-| New modes | Free update | Year One |
-| Map Pack 1 | Free update | Year One |
-| Mission Editor (create / play / share) | Free update | Year One |
-| Crusade mode | Free update | Early 2027 (moved from autumn 2026) |
+<Timeline
+  items={[
+    { title: 'The Blood Ravens Story Prologue', tag: 'Paid expansion', when: 'Year One', note: 'Story content for the series\u2019 signature chapter — the Blood Ravens storyline continues.' },
+    { title: 'AFTERMATH', tag: 'Paid expansion', when: 'Year One', note: 'The second announced story expansion; details still limited.' },
+    { title: 'New game modes', tag: 'Free update', when: 'Year One', note: 'Additional formats beyond the launch lineup of Annihilation, Domination, Maelstrom and Defend.' },
+    { title: 'Map Pack 1', tag: 'Free update', when: 'Year One', note: 'First free map drop for the 30-map multiplayer pool.' },
+    { title: 'Mission Editor', tag: 'Free update', when: 'Year One', note: 'Create, play and share custom missions — the community-content engine.' },
+    { title: 'Crusade mode', tag: 'Free update', when: 'Early 2027', note: 'The narrative army-progression mode returns (moved from autumn 2026 with the launch delay).' },
+  ]}
+  caption="Officially published Year One roadmap — this timeline updates as each item ships (dated sources, no rumors)."
+/>
 
 ## What are the two paid expansions?
 

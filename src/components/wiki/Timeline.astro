@@ -1,0 +1,90 @@
+---
+/**
+ * Timeline — glowing vertical roadmap timeline (official-reference design).
+ * Orange spine, numbered outlined nodes with glow, content to the right.
+ * Pure CSS; numbers via CSS counters.
+ *
+ * Usage:
+ *   <Timeline items={[
+ *     { title: 'The Blood Ravens Story Prologue', tag: 'Paid expansion', when: 'Year One', note: '…' },
+ *   ]} />
+ */
+interface Item {
+  title: string;
+  tag?: string;
+  when?: string;
+  note?: string;
+}
+interface Props {
+  items: Item[];
+  /** Caption under the timeline. */
+  caption?: string;
+}
+const { items, caption } = Astro.props;
+---
+
+<ol class="gd-timeline not-prose my-8" role="list">
+  {items.map((it) => (
+    <li class="gd-tl-item">
+      <div class="gd-tl-body">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="font-display text-base font-bold text-foreground">{it.title}</span>
+          {it.tag && (
+            <span class:list={['rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider', it.tag.toLowerCase().includes('paid') ? 'bg-[hsl(var(--brand)/0.18)] text-[hsl(var(--brand-light))]' : 'bg-muted text-muted-foreground']}>
+              {it.tag}
+            </span>
+          )}
+          {it.when && <span class="text-xs text-muted-foreground">· {it.when}</span>}
+        </div>
+        {it.note && <p class="mt-1 text-sm text-muted-foreground">{it.note}</p>}
+      </div>
+    </li>
+  ))}
+</ol>
+{caption && <p class="-mt-4 text-xs text-muted-foreground">{caption}</p>}
+
+<style is:global>
+  .gd-timeline {
+    position: relative;
+    margin-left: 0.4rem;
+    padding-left: 1.9rem;
+    list-style: none;
+    counter-reset: tl;
+  }
+  .gd-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.72rem;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    width: 2px;
+    background: linear-gradient(180deg, hsl(var(--brand) / 0.9), hsl(var(--brand) / 0.25));
+  }
+  .gd-tl-item {
+    position: relative;
+    padding: 0.55rem 0 0.9rem;
+    counter-increment: tl;
+  }
+  .gd-tl-item::before {
+    content: counter(tl, decimal-leading-zero);
+    position: absolute;
+    left: -1.9rem;
+    top: 0.45rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: hsl(var(--brand-light));
+    border: 1.5px solid hsl(var(--brand) / 0.85);
+    border-radius: 9999px;
+    background: hsl(var(--background));
+    box-shadow: 0 0 10px hsl(var(--brand) / 0.45);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gd-tl-item::before { box-shadow: none; }
+  }
+</style>
