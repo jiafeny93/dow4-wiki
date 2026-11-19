@@ -17,7 +17,7 @@ fi
 echo "── deploy (retries built in) ──"
 ok=0
 for i in $(seq 1 12); do
-  out=$(npx wrangler pages deploy dist --project-name=dow4-wiki --branch main --commit-dirty=true 2>&1 | tail -3)
+  out=$(HTTPS_PROXY=http://127.0.0.1:7897 npx wrangler pages deploy dist --project-name=dow4-wiki --branch main --commit-dirty=true 2>&1 | tail -3)
   if echo "$out" | grep -q "Success"; then
     echo "✅ deployed (attempt $i)"
     ok=1
