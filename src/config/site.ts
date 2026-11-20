@@ -73,6 +73,8 @@ export const site: SiteConfig = {
   contactEmail: '',
   social: {
     official: 'https://www.deepsilver.com/games/dawn-of-war-iv',
+    youtube: 'https://www.youtube.com/@DawnofWar4',
+    reddit: 'https://www.reddit.com/r/dawnofwar',
   },
   game: {
     name: 'Dawn of War IV',
